@@ -265,7 +265,15 @@ class RPCOrder extends RPCMethod implements DealListener {
         String tag = jsn.getString("tag").trim();
         tag = tag.trim();
         String callback = jsn.getString("callback");
-        int type = jsn.getInt("type");
+        int type = 0;
+        String typeS = jsn.getString("type");
+        if( typeS != null){
+            try{
+                type = Integer.parseInt(typeS);
+            }catch(Exception e){
+                return ret(msg, "type must be integer");
+            }
+        }
         log("order %s %d %f %d %s", sym, vol, pri, type, tag);
         Order odr = null;
         try{

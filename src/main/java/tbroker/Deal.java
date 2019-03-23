@@ -51,11 +51,11 @@ public class Deal extends Util {
     public JSONObject toJsn() {
         JSONObject jsn = new JSONObject();
         jsn.put("sym", sym);
-        jsn.put("vol", "" + vol);
-        jsn.put("price", "" + pri);
+        jsn.put("vol", vol);
+        jsn.put("price", pri);
         jsn.put("tag", tag);
         jsn.put("oid", new String(oid));
-        jsn.put("ts", date.getTime() / 1000);
+        jsn.put("date", formatL(date));
         return jsn;
     }
 
