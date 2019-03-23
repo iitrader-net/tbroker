@@ -255,6 +255,7 @@ class RPCOrder extends RPCMethod implements DealListener {
         if (sym.endsWith("TW") && (vol % 1000) != 0) {
             return ret(msg, "*.TW symbol must have a volume in multiples of 1000");
         }
+        String tag = jsn.getString("tag").trim();
         if (tag.contains("#")) {
             return ret(msg, "tag can not contain #");
         }
@@ -262,7 +263,6 @@ class RPCOrder extends RPCMethod implements DealListener {
             return ret(msg, "invalid symbol");
         }
         double pri = jsn.getDouble("pri");
-        String tag = jsn.getString("tag").trim();
         tag = tag.trim();
         String callback = jsn.getString("callback");
         int type = 0;
