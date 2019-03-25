@@ -252,8 +252,13 @@ class RPCOrder extends RPCMethod implements DealListener {
 
         String sym = jsn.getString("sym").toUpperCase();
         int vol = jsn.getInt("vol");
-        if (sym.endsWith("TW") && (vol % 1000) != 0) {
-            return ret(msg, "*.TW symbol must have a volume in multiples of 1000");
+        if (sym.endsWith("TW")) {
+            char c = sym.charAt(0);
+            if(Character.isLetter(c)){
+                vol *= (c == 'M'?50:200);
+            }else if((vol % 1000) != 0){
+                return ret(msg, "*.TW symbol must have a volume in multiples of 1000");
+            }
         }
         if (!brokerMapper.isSymValid(sym)) {
             return ret(msg, "invalid symbol");
