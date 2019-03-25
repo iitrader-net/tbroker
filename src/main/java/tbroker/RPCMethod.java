@@ -210,7 +210,7 @@ class RPCOrder extends RPCMethod implements DealListener {
                 callBack = callbacks.get(deal.odr);
             }
             if (callBack == null) {
-                log("no callback for:" + deal.toString());
+                log("bug: no callback for:" + deal.toString());
                 return;
             }
             JSONObject msg = new JSONObject();
@@ -260,11 +260,14 @@ class RPCOrder extends RPCMethod implements DealListener {
                 return ret(msg, "*.TW symbol must have a volume in multiples of 1000");
             }
         }
+        String tag = jsn.getString("tag").trim();
+        if (tag.contains("#")) {
+            return ret(msg, "tag can not contain #");
+        }
         if (!brokerMapper.isSymValid(sym)) {
             return ret(msg, "invalid symbol");
         }
         double pri = jsn.getDouble("pri");
-        String tag = jsn.getString("tag").trim();
         tag = tag.trim();
         String callback = jsn.getString("callback");
         int type = 0;
@@ -278,12 +281,16 @@ class RPCOrder extends RPCMethod implements DealListener {
         }
         log("order %s %d %f %d %s", sym, vol, pri, type, tag);
         Order odr = null;
-        synchronized (this) {
-            odr = broker.order(sym, vol, pri, new Date(), this, type, tag);
-            if (odr != null) {
-                odr.priv = token;
-                callbacks.put(odr, callback);
+        try{
+            synchronized (this) {
+                odr = broker.order(sym, vol, pri, new Date(), this, type, tag);
+                if (odr != null && !callback.isEmpty()) {
+                    odr.priv = token;
+                    callbacks.put(odr, callback);
+                }
             }
+        }catch(Exception e){
+            return ret(msg, e.toString());
         }
         if (odr == null) {
             log("fail to order");
