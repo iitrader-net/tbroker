@@ -1,0 +1,29 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'maven'
+
+group = 'iitrader'
+
+mainClassName = 'tbroker.Shell'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'org.json:json:20171018'
+	compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.0-rc3'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+}
+
+jar {
+  manifest {
+    attributes(
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': 'tbroker.Shell'
+    )
+  }
+}
