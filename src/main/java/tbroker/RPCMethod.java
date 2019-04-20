@@ -267,16 +267,16 @@ class RPCOrder extends RPCMethod implements DealListener {
         String callback = jsn.getString("callback");
         int type = 0;
         String typeS = jsn.getString("type");
-        if( typeS != null){
-            try{
+        if (typeS != null) {
+            try {
                 type = Integer.parseInt(typeS);
-            }catch(Exception e){
+            } catch (Exception e) {
                 return ret(msg, "type must be integer");
             }
         }
         log("order %s %d %f %d %s", sym, vol, pri, type, tag);
         Order odr = null;
-        try{
+        try {
             synchronized (this) {
                 odr = broker.order(sym, vol, pri, new Date(), this, type, tag);
                 if (odr != null && !callback.isEmpty()) {
@@ -284,7 +284,7 @@ class RPCOrder extends RPCMethod implements DealListener {
                     callbacks.put(odr, callback);
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             return ret(msg, e.toString());
         }
         if (odr == null) {

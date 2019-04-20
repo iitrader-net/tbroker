@@ -25,68 +25,57 @@
 /*-****************************************************************************/
 package tbroker;
 
+import java.io.*;
 import java.util.*;
+import org.json.*;
 
-public class Avg {
-    LinkedList<Double> l;
-    LinkedList<Double> w;
-    LinkedList<Double> v;
-    int M;
-    double TOT, WEI, DIV;
+public class StrategyTXNDMA extends StrategyTXND {
+    static final int MA_SZ = 20;
+    Avg ma = new Avg(MA_SZ);
 
-    public Avg(int M) {
-        this.M = M;
-        l = new LinkedList<Double>();
-        w = new LinkedList<Double>();
-        v = new LinkedList<Double>();
+    public void init(String sym, DealListener dealListener, Broker broker, Quote quote)
+            throws Exception {
+        super.init(sym, "p", -50, 12, dealListener, broker);
+        quote.bind(sym, this);
     }
 
-    public void push(double d, double wa) {
-        TOT += wa * d;
-        WEI += wa;
-        DIV += (d - avg()) * (d - avg());
-        l.addLast(wa * d);
-        w.addLast(wa);
-        v.addLast((d - avg()) * (d - avg()));
-        if (l.size() > M) {
-            TOT -= l.remove();
-            WEI -= w.remove();
-            DIV -= v.remove();
+    public void save(File dir) throws Exception {
+        JSONObject jsn = new JSONObject();
+        jsn.put("oi", new Integer(oi == null ? 0 : oi.vol()));
+        JSONArray vs = new JSONArray();
+        int i = 0;
+        for (Double d : ma.w) {
+            vs.put(i++, d);
+        }
+        jsn.put("ma", vs);
+        saveJson(jsn, getJsonFile(dir, sym));
+    }
+
+    public void load(File dir) throws Exception {
+        JSONObject jsn = loadJson(getJsonFile(dir, sym));
+        oi.vol = jsn.getInt("oi");
+        JSONArray vs = jsn.getJSONArray("ma");
+        ma = new Avg(MA_SZ);
+        for (int i = 0; i < vs.length(); i++) {
+            ma.push(vs.getDouble(i));
         }
     }
 
-    public void push(double d) {
-        push(d, 1);
-    }
-
-    public double avg() {
-        return TOT / WEI;
-    }
-
-    public int sz() {
-        return l.size();
-    }
-
-    double stddiv() {
-        return Math.sqrt(DIV / sz());
-    }
-
-    void div(double div) {
-        TOT -= WEI * div;
-        LinkedList<Double> ln = new LinkedList<Double>();
-        for (int i = 0; i < l.size(); i++) {
-            double d = l.get(i) - w.get(i) * div;
-            ln.addLast(d);
+    public void _tick(Tick tick) {
+        ma.push(tick.pri, 1);
+        if (ma.sz() < MA_SZ) {
+            return;
         }
-        l = ln;
+        double avg = ma.avg();
+        Date date = tick.getDate();
+        if (tick.pri > avg + 20 && !inPos() && !inOdr()) {
+            order(scale, 0, date, "go");
+        } else if (tick.pri < avg) {
+            cover(date, 0, "stop");
+        }
     }
 
-    public Object clone() {
-        Avg o = new Avg(M);
-        o.TOT = TOT;
-        o.WEI = WEI;
-        o.l = l;
-        o.w = w;
-        return o;
+    public void _deal(Deal deal) {
+        log(E, "_deal:" + deal.toString());
     }
 }
