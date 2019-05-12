@@ -31,14 +31,8 @@ import org.json.*;
 
 public abstract class StrategyTXND extends StrategyTX implements PData {
 
-    public void init(
-            String sym,
-            String ptag,
-            int scale,
-            int mhead,
-            int mtail,
-            DealListener dealListener,
-            Broker broker) {
+    public void init(String _sym, DealListener _dealListener, Broker _broker, Quote quote)
+            throws Exception {
         super.init(sym, ptag, mhead, mtail, dealListener, broker);
         isDay = false;
     }
@@ -65,16 +59,5 @@ public abstract class StrategyTXND extends StrategyTX implements PData {
         super.dayOpen(_day);
         day1stTick = false;
         day = _day;
-    }
-
-    public void tick(Tick tick) {
-        super.tick(tick);
-        if (!day1stTick && oi.vol != 0) {
-            Order odr =
-                    new Order(oi.sym, oi.vol, 0, tick.getDate(), 0, "vo", null, "dummy".getBytes());
-            double pri = idx(sym, "SED");
-            Deal d = new Deal(odr, pri, day);
-            day1stTick = true;
-        }
     }
 }
