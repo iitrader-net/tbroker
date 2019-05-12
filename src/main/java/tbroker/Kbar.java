@@ -30,7 +30,7 @@ import java.util.*;
 
 public class Kbar extends Util {
     private long ms;
-    private double o, e, h, l;
+    double o, e, h, l;
     private Date sd;
 
     public Kbar(long _ms) {
