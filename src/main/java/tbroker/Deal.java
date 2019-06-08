@@ -52,7 +52,7 @@ public class Deal extends Util {
         JSONObject jsn = new JSONObject();
         jsn.put("sym", sym);
         jsn.put("vol", vol);
-        jsn.put("price", pri);
+        jsn.put("price", Double.parseDouble(String.format("%.2f", pri)));
         jsn.put("tag", tag);
         jsn.put("oid", new String(oid));
         jsn.put("date", formatL(date));
