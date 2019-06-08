@@ -40,7 +40,7 @@ public class QuoteII extends RPCClient implements Quote {
     ScheduledThreadPoolExecutor scheduler;
 
     public void login(String acc_pass) throws Exception {
-        // acc_pass,https://rpc.iitrader.net:5691,api_key,token
+        // quote tbroker.QuoteII acc_pass,http://i2trader.com:5691,apikey_...
         String[] s = acc_pass.split(",");
         hostURL = s[1];
         token = "";
