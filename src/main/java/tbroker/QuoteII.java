@@ -53,8 +53,14 @@ public class QuoteII extends RPCClient implements Quote {
         log(E, token);
         if (!support("SPY")) throw new Exception("login fails");
     }
-
+    String toRSym(String sym) {
+        if(sym.startsWith("tx")){
+            return "TX"+sym.substring(6, 8) + ".TW";
+        }
+        return sym;
+    }
     public boolean support(String sym) {
+        sym = toRSym(sym);
         try {
             JSONObject ret = get("/quote/" + sym);
             if (ret.getString("ret").equals("OK")) {
@@ -72,6 +78,7 @@ public class QuoteII extends RPCClient implements Quote {
     }
 
     public void bind(String sym, QuoteListener nl) {
+        sym = toRSym(sym);
         LinkedList<QuoteListener> ls = listeners.get(sym);
         if (ls == null) {
             ls = new LinkedList<QuoteListener>();
@@ -82,6 +89,7 @@ public class QuoteII extends RPCClient implements Quote {
     }
 
     public void unbind(String sym, QuoteListener l) {
+        sym = toRSym(sym);
         LinkedList<QuoteListener> ls = listeners.get(sym);
         if (ls == null) {
             throw new RuntimeException("unexpected unbind");
