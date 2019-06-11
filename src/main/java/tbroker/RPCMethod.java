@@ -254,9 +254,9 @@ class RPCOrder extends RPCMethod implements DealListener {
         int vol = jsn.getInt("vol");
         if (sym.endsWith("TW")) {
             char c = sym.charAt(0);
-            if(Character.isLetter(c)){
-                vol *= (c == 'M'?50:200);
-            }else if((vol % 1000) != 0){
+            if (Character.isLetter(c)) {
+                vol *= (c == 'M' ? 50 : 200);
+            } else if ((vol % 1000) != 0) {
                 return ret(msg, "*.TW symbol must have a volume in multiples of 1000");
             }
         }

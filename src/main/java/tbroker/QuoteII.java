@@ -54,7 +54,15 @@ public class QuoteII extends RPCClient implements Quote {
         if (!support("SPY")) throw new Exception("login fails");
     }
 
+    static String toRSym(String sym) {
+        if (sym.startsWith("tx")) {
+            return "TX" + sym.substring(6, 8) + ".TW";
+        }
+        return sym;
+    }
+
     public boolean support(String sym) {
+        sym = toRSym(sym);
         try {
             JSONObject ret = get("/quote/" + sym);
             if (ret.getString("ret").equals("OK")) {
@@ -72,6 +80,7 @@ public class QuoteII extends RPCClient implements Quote {
     }
 
     public void bind(String sym, QuoteListener nl) {
+        sym = toRSym(sym);
         LinkedList<QuoteListener> ls = listeners.get(sym);
         if (ls == null) {
             ls = new LinkedList<QuoteListener>();
@@ -82,6 +91,7 @@ public class QuoteII extends RPCClient implements Quote {
     }
 
     public void unbind(String sym, QuoteListener l) {
+        sym = toRSym(sym);
         LinkedList<QuoteListener> ls = listeners.get(sym);
         if (ls == null) {
             throw new RuntimeException("unexpected unbind");
@@ -102,17 +112,21 @@ public class QuoteII extends RPCClient implements Quote {
         public void run() {
             try {
                 JSONObject ret = get("/quote/" + sym);
-                if (ret.getString("ret").equals("OK")) {
-                    double pri = ret.getDouble("v");
-                    long ts = ret.getLong("ts");
-                    LinkedList<QuoteListener> ql = listeners.get(sym);
-                    for (QuoteListener l : ql) {
-                        Tick tick = new Tick(new Date(ts * 1000), 1, pri);
-                        l.tick(tick);
-                    }
-                }
+                tick(sym, ret);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    void tick(String sym, JSONObject jsn) {
+        if (jsn.getString("ret").equals("OK")) {
+            double pri = jsn.getDouble("v");
+            long ts = jsn.getLong("ts");
+            LinkedList<QuoteListener> ql = listeners.get(sym);
+            for (QuoteListener l : ql) {
+                Tick tick = new Tick(new Date(ts * 1000), 1, pri);
+                l.tick(tick);
             }
         }
     }
