@@ -30,8 +30,9 @@ import java.util.*;
 
 public class Kbar extends Util {
     private long ms;
-    double o, e, h, l;
     private Date sd;
+    double o, e, h, l;
+    double vol;
 
     public Kbar(long _ms) {
         ms = _ms;
@@ -44,13 +45,27 @@ public class Kbar extends Util {
         return (d.getTime() - sd.getTime()) > ms;
     }
 
-    public void tick(double pri, Date d, int vol) {
+    public void tick(double pri, Date d, int _vol) {
         if (sd == null || isNext(d)) {
             o = e = h = l = pri;
             sd = d;
+            vol = _vol;
         }
         if (pri > h) h = pri;
         if (pri < l) l = pri;
         e = pri;
+        vol += _vol;
+    }
+
+    public Object clone() {
+        Kbar obj = new Kbar(M);
+        obj.ms = ms;
+        obj.sd = sd;
+        obj.o = o;
+        obj.e = e;
+        obj.h = h;
+        obj.l = l;
+        obj.vol = vol;
+        return obj;
     }
 }
