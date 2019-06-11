@@ -53,12 +53,14 @@ public class QuoteII extends RPCClient implements Quote {
         log(E, token);
         if (!support("SPY")) throw new Exception("login fails");
     }
-    String toRSym(String sym) {
-        if(sym.startsWith("tx")){
-            return "TX"+sym.substring(6, 8) + ".TW";
+
+    static String toRSym(String sym) {
+        if (sym.startsWith("tx")) {
+            return "TX" + sym.substring(6, 8) + ".TW";
         }
         return sym;
     }
+
     public boolean support(String sym) {
         sym = toRSym(sym);
         try {
@@ -110,17 +112,21 @@ public class QuoteII extends RPCClient implements Quote {
         public void run() {
             try {
                 JSONObject ret = get("/quote/" + sym);
-                if (ret.getString("ret").equals("OK")) {
-                    double pri = ret.getDouble("v");
-                    long ts = ret.getLong("ts");
-                    LinkedList<QuoteListener> ql = listeners.get(sym);
-                    for (QuoteListener l : ql) {
-                        Tick tick = new Tick(new Date(ts * 1000), 1, pri);
-                        l.tick(tick);
-                    }
-                }
+                tick(sym, ret);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    void tick(String sym, JSONObject jsn) {
+        if (jsn.getString("ret").equals("OK")) {
+            double pri = jsn.getDouble("v");
+            long ts = jsn.getLong("ts");
+            LinkedList<QuoteListener> ql = listeners.get(sym);
+            for (QuoteListener l : ql) {
+                Tick tick = new Tick(new Date(ts * 1000), 1, pri);
+                l.tick(tick);
             }
         }
     }
