@@ -108,6 +108,7 @@ public abstract class StrategyTX extends Strategy {
         isClr = false;
 
         log(E, "dayOpen:" + sym + Cfg.sep + formatL(date));
+        isOpened = true;
     }
 
     public void tick(Tick tick) {
@@ -150,6 +151,11 @@ public abstract class StrategyTX extends Strategy {
                             "dummp".getBytes());
             Deal deal = new Deal(odr, dp, ltick.getDate());
         }
+        isOpened = false;
+    }
+
+    public boolean isOpened() {
+        return isOpened;
     }
 
     Broker broker;
@@ -178,6 +184,9 @@ public abstract class StrategyTX extends Strategy {
     Date mt;
 
     int mhead, mtail;
+
+    /// check if dayOpen
+    boolean isOpened;
 
     Date getCloseDay() {
         Date d = new Date();
