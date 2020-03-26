@@ -504,7 +504,8 @@ public class Shell extends Util implements Runnable, DealListener, QuoteListener
             rpcHttp(args);
         } else if (cmd.equals("rpc-exe")) {
             rpcExe(args);
-        } else {
+        } else if (cmd.equals("quit")) {
+            System.exit(0);
             return false;
         }
         return true;
