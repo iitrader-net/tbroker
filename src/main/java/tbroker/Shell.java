@@ -506,9 +506,8 @@ public class Shell extends Util implements Runnable, DealListener, QuoteListener
             rpcExe(args);
         } else if (cmd.equals("quit")) {
             System.exit(0);
-            return false;
         }
-        return true;
+        return false;
     }
 
     public void run() {
