@@ -41,9 +41,9 @@ public class QuoteCloud extends Cloud implements Quote {
                     ql.dayClose();
                 } else {
                     Tick tick = new Tick(event);
-                    if(ql instanceof StrategyTX) {
+                    if (ql instanceof StrategyTX) {
                         StrategyTX strategy = (StrategyTX) ql;
-                        if(strategy.isOpened() == false) {
+                        if (strategy.isOpened() == false) {
                             // Tick is coming but day is not opened. Force to open.
                             d = new Date(); // Go, now.
                             ql.dayOpen(d);
