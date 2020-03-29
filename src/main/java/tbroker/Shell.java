@@ -231,6 +231,9 @@ public class Shell extends Util implements Runnable, DealListener, QuoteListener
                 String[] sts = stat.split(":");
                 String cname = sts[0];
                 int unit = Integer.parseInt(sts[1]);
+                if (unit == 0) {
+                    continue;
+                }
                 Class c = Class.forName("tbroker." + cname);
                 Strategy p = (Strategy) (c.newInstance());
                 p.initScale(unit);
