@@ -83,7 +83,7 @@ public abstract class StrategyTX extends Strategy {
             oin = oi.vol();
         }
         return String.format(
-                "%3d %6s %6s %6.0f %6.0f %6.0f %6.0f %6.0f %8s",
+                "%3d %10s %6s %6.0f %6.0f %6.0f %6.0f %6.0f %8s",
                 oin, ptag, sym, open, pri, stp, upp, net, ts);
     }
 
