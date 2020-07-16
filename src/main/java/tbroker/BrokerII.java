@@ -71,7 +71,7 @@ public class BrokerII extends RPCClient implements Broker {
 
     public Order order(
             String sym, int vol, double pri, Date date, DealListener ol, int type, String tag) {
-        if (ol != null) throw new RuntimeException("DealListener is not supported yet");
+        //if (ol != null) throw new RuntimeException("DealListener is not supported yet");
         sym = convertTX(sym);
         JSONObject jsn = new JSONObject();
         jsn.put("sym", sym);
