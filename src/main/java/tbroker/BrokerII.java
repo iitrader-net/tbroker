@@ -63,9 +63,16 @@ public class BrokerII extends RPCClient implements Broker {
         pos = new PositionCache(ps);
     }
 
+    static String convertTX(String sym) {
+        if (!sym.startsWith("tx")) return sym;
+        String mon = sym.substring(6, 8);
+        return "TX" + mon + ".TW";
+    }
+
     public Order order(
             String sym, int vol, double pri, Date date, DealListener ol, int type, String tag) {
         if (ol != null) throw new RuntimeException("DealListener is not supported yet");
+        sym = convertTX(sym);
         JSONObject jsn = new JSONObject();
         jsn.put("sym", sym);
         jsn.put("vol", "" + vol);
