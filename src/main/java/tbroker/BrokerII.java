@@ -118,6 +118,7 @@ public class BrokerII extends RPCClient implements Broker {
 
     public int getOI(String sym) {
         try {
+            sym = convertTX(sym);
             syncPosition();
             return pos.getOI(sym);
         } catch (Exception e) {
