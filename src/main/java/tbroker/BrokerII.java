@@ -121,7 +121,7 @@ public class BrokerII extends RPCClient implements Broker {
             sym = convertTX(sym);
             syncPosition();
             int oi = pos.getOI(sym);
-            if (sym.startsWith("tx")) {
+            if (sym.toLowerCase().startsWith("tx")) {
                 oi/=200;
             }
             return oi; 
