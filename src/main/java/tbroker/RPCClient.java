@@ -28,6 +28,7 @@ package tbroker;
 import java.io.*;
 import java.util.*;
 import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.params.*;
 import org.apache.commons.httpclient.methods.*;
 import org.json.*;
 
@@ -37,7 +38,10 @@ class RPCClient extends Util {
     HttpClient http = new HttpClient();
 
     RPCClient() {
-        http.getParams().setParameter("http.socket.timeout", new Integer(5000));
+        http.getParams().setParameter("http.socket.timeout", new Integer(30000));
+        HttpConnectionParams params = http.getHttpConnectionManager().getParams();
+        params.setConnectionTimeout(30000);
+        params.setSoTimeout(30000);
     }
 
     JSONObject get(String path) throws Exception {
