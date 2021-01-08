@@ -38,10 +38,10 @@ class RPCClient extends Util {
     HttpClient http = new HttpClient();
 
     RPCClient() {
-        http.getParams().setParameter("http.socket.timeout", new Integer(30000));
+        http.getParams().setParameter("http.socket.timeout", new Integer(60000));
         HttpConnectionParams params = http.getHttpConnectionManager().getParams();
-        params.setConnectionTimeout(30000);
-        params.setSoTimeout(30000);
+        params.setConnectionTimeout(60000);
+        params.setSoTimeout(60000);
     }
 
     JSONObject get(String path) throws Exception {
