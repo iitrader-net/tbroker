@@ -237,6 +237,7 @@ public class Shell extends Util implements Runnable, DealListener, QuoteListener
                 Class c = Class.forName("tbroker." + cname);
                 Strategy p = (Strategy) (c.newInstance());
                 p.initScale(unit);
+                log("%s scalue: %d", cname, unit);
                 pl.add(p);
                 if (p instanceof PData) {
                     PData pd = (PData) p;
