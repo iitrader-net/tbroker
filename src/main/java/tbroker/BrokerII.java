@@ -64,7 +64,7 @@ public class BrokerII extends RPCClient implements Broker {
     }
 
     static String convertTX(String sym) {
-        if (!sym.startsWith("tx")) return sym;
+        if (!sym.startsWith("tx") && !sym.startsWith("mx")) return sym;
         String mon = sym.substring(6, 8);
         return "TX" + mon + ".TW";
     }
