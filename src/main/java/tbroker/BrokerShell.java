@@ -50,7 +50,8 @@ public class BrokerShell implements Broker {
 
         public void deal(Deal deal) {
             deals.add(deal);
-            parent.deal(deal);
+            if (parent != null)
+                parent.deal(deal);
         }
     }
 
